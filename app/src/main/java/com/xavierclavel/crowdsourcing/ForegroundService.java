@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -22,12 +23,13 @@ import androidx.core.app.NotificationCompat;
 public class ForegroundService extends Service {
 
     public static JobScheduler scheduler;
-    int wiFiJobId = 112;
+    public static ForegroundService instance;
+    static int wiFiJobId = 112;
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        instance = this;
         String input = intent.getStringExtra("inputExtra");
         createNotificationChannel();
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -51,9 +53,9 @@ public class ForegroundService extends Service {
         return START_NOT_STICKY;
     }
 
-    private void scheduleJobWiFi() {
+    public static void scheduleJobWiFi() {
         Log.d("foreground service", "about to start job");
-        ComponentName serviceName = new ComponentName(this, WiFiJobService.class);
+        ComponentName serviceName = new ComponentName(instance, WiFiJobService.class);
         JobInfo jobInfo = new JobInfo.Builder(wiFiJobId, serviceName)
                 //.setPeriodic(1000)
                 .setMinimumLatency(5000)
@@ -61,8 +63,12 @@ public class ForegroundService extends Service {
         int result = scheduler.schedule(jobInfo);
         Log.d("foreground service", "success");
         if (result == JobScheduler.RESULT_SUCCESS) {
-            Toast.makeText(this, "successfully scheduled job", Toast.LENGTH_LONG).show();
+            //Toast.makeText(instance, "successfully scheduled job", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static void displayToast() {
+        Toast.makeText(instance, "scan successful", Toast.LENGTH_LONG).show();
     }
 
     private void createNotificationChannel() {
@@ -81,6 +87,12 @@ public class ForegroundService extends Service {
     public void onCreate() {
         super.onCreate();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("foreground service", "foreground service destroyed");
     }
 
     @Nullable
