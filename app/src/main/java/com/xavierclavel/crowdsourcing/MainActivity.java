@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         findViewById(R.id.buttonWrite).setOnClickListener(this);
         findViewById(R.id.buttonPlot).setOnClickListener(this);
+        findViewById(R.id.buttonRead).setOnClickListener(this);
         Log.d("__________________________________________", "start");
 
         instance = this;
@@ -42,14 +43,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static void DisplayData(List<ScanResult> scanResults) {
         //adapter.add("_________________________________________________");
-        for (ScanResult scanResult : scanResultsMemory) {
-            //adapter.add(scanResult.toString());
-            adapter.remove(scanResult.SSID + "\n" + scanResult.BSSID);
-            adapter.remove("_________________________________________________");
-        }
+        adapter.clear();
         for (ScanResult scanResult : scanResults) {
             //adapter.add(scanResult.toString());
-            adapter.add(scanResult.SSID + "\n" + scanResult.BSSID);
+            String ssid = scanResult.SSID.equals("") ? "SSID unknown" : scanResult.SSID;
+            adapter.add(ssid + "\n" + scanResult.BSSID);
             adapter.add("_________________________________________________");
         }
         scanResultsMemory = scanResults;
@@ -64,6 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonPlot:
                 Intent intent = new Intent(this, PlotActivity.class);
                 startActivity(intent);
+                break;
+
+            case R.id.buttonRead:
+                Log.d("main activity", "read button pressed");
+                XmlManager.Read();
                 break;
         }
         Log.d("main activity", "button clicked");

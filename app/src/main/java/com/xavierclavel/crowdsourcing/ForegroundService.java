@@ -13,11 +13,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 public class ForegroundService extends Service {
@@ -33,8 +31,7 @@ public class ForegroundService extends Service {
         String input = intent.getStringExtra("inputExtra");
         createNotificationChannel();
         Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Foreground Service")
                 .setContentText(input)
@@ -57,13 +54,11 @@ public class ForegroundService extends Service {
         Log.d("foreground service", "about to start job");
         ComponentName serviceName = new ComponentName(instance, WiFiJobService.class);
         JobInfo jobInfo = new JobInfo.Builder(wiFiJobId, serviceName)
-                //.setPeriodic(1000)
                 .setMinimumLatency(5000)
                 .build();
         int result = scheduler.schedule(jobInfo);
-        Log.d("foreground service", "success");
         if (result == JobScheduler.RESULT_SUCCESS) {
-            //Toast.makeText(instance, "successfully scheduled job", Toast.LENGTH_LONG).show();
+            Log.d("foreground service", "success");
         }
     }
 
@@ -72,15 +67,9 @@ public class ForegroundService extends Service {
     }
 
     private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Foreground Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
-        }
+        NotificationChannel serviceChannel = new NotificationChannel(CHANNEL_ID, "Foreground Service Channel", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        manager.createNotificationChannel(serviceChannel);
     }
 
     @Override

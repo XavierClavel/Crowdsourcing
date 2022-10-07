@@ -2,12 +2,9 @@ package com.xavierclavel.crowdsourcing;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Xml;
 
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
@@ -31,6 +28,23 @@ public class PlotActivity extends AppCompatActivity {
         XmlManager.autoUpdate = true;
     }
 
+    /*@Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        Log.d("tag", "config changed");
+        super.onConfigurationChanged(newConfig);
+
+        //setContentView(R.layout.activity_plot);
+
+        int orientation = newConfig.orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT)
+            Log.d("tag", "Portrait");
+        else if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+            Log.d("tag", "Landscape");
+        else
+            Log.w("tag", "other: " + orientation);
+    }*/
+
     public static void plotData(List<TimestampedData> dataMemory) {
         instance.setContentView(R.layout.activity_plot);    //reload plot window to update it
         if (dataMemory == null) {
@@ -52,7 +66,7 @@ public class PlotActivity extends AppCompatActivity {
             ids[i] = i;
             times[i] = Integer.parseInt(timestampedData.timestamp);
             nbAps[i] = timestampedData.scanResults.size();
-            Log.d("plot activity", "Measurement id "+i+"- timestamp "+times[i] +" - nb APS "+nbAps[i]);
+            //Log.d("plot activity", "Measurement id "+i+"- timestamp "+times[i] +" - nb APS "+nbAps[i]);
             i++;
         }
 
